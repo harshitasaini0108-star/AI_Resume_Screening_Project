@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analysis Results | ResumeAI</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/">Resume<span>AI</span></a><span class="tag">ANALYSIS REPORT</span></header>
+<main class="results">
+  <a class="back" href="/">← Analyze another resume</a>
+  <section class="result-heading"><p class="eyebrow">SCREENING COMPLETE</p><h1>Resume Analysis</h1><p class="muted">File: {{ filename }}</p></section>
+  <section class="stats">
+    <div class="stat"><span class="muted">Skills detected</span><strong>{{ skills|length }}</strong></div>
+    <div class="stat"><span class="muted">Resume words</span><strong>{{ feedback.word_count }}</strong></div>
+    {% if jd_result %}<div class="stat"><span class="muted">Job description match</span><strong>{{ jd_result.match_percentage }}%</strong></div>{% endif %}
+  </section>
+  <section class="panel">
+    <h2>Detected Skills</h2>
+    {% if skills %}<div class="skill-list">{% for skill in skills %}<span>{{ skill }}</span>{% endfor %}</div>{% else %}<p>No known skills detected. Try adding a clear Skills section to the resume.</p>{% endif %}
+  </section>
+  <section class="panel">
+    <h2>Recommended Job Roles</h2><p class="muted">Scores represent overlap with this demo's role skill lists, not a hiring probability.</p>
+    <div class="table-wrap"><table><thead><tr><th>Role</th><th>Skill match</th><th>Matched skills</th><th>Skills to learn</th></tr></thead><tbody>
+    {% for item in jobs %}<tr><td>{{ item.job }}</td><td><div class="score"><span style="width: {{ item.match }}%"></span></div><b>{{ item.match }}%</b></td><td>{{ item.matched_skills|join(", ") if item.matched_skills else "—" }}</td><td>{{ item.missing_skills|join(", ") if item.missing_skills else "—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+  {% if jd_result %}
+  <section class="panel">
+    <h2>Resume vs Job Description</h2><div class="big-score">{{ jd_result.match_percentage }}<small>% match</small></div>
+    <p>Text similarity (TF-IDF): <b>{{ jd_result.text_similarity }}%</b></p>
+    <div class="two-col"><div><h3>Matched skills</h3><p>{{ jd_result.matched_skills|join(", ") if jd_result.matched_skills else "No shared known skills found." }}</p></div><div><h3>Missing skills</h3><p>{{ jd_result.missing_skills|join(", ") if jd_result.missing_skills else "No missing known skills detected." }}</p></div></div>
+  </section>{% endif %}
+  <section class="panel">
+    <h2>Resume Improvement Suggestions</h2><ul>{% for suggestion in feedback.suggestions %}<li>{{ suggestion }}</li>{% endfor %}</ul><p class="small">{{ feedback.note }}</p>
+  </section>
+  <details class="panel"><summary>View extracted resume text (preview)</summary><pre>{{ resume_preview }}</pre></details>
+  <p class="disclaimer">This prototype supports decision assistance only. It does not rank a person's worth or make an automated hiring decision.</p>
+</main>
+<footer>ResumeAI · AIML student project</footer>
+</body></html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Resume Screening</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar"><div class="brand">Resume<span>AI</span></div><span class="tag">AIML PROJECT</span></header>
+<main class="hero">
+  <section class="intro">
+    <p class="eyebrow">SMART CAREER MATCHING</p>
+    <h1>AI Resume Screening<br>& Job Recommendation</h1>
+    <p class="sub">Upload a resume to identify skills, explore suitable roles, and compare your profile with a job description.</p>
+    <div class="chips"><span>PDF text extraction</span><span>Skill detection</span><span>TF-IDF matching</span></div>
+  </section>
+  <section class="panel">
+    <h2>Analyze your resume</h2>
+    <p class="muted">Your uploaded file is processed locally by this app and removed after analysis.</p>
+    {% with messages = get_flashed_messages() %}{% if messages %}<div class="alert">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}{% endwith %}
+    <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+      <label for="resume">Resume PDF <span class="required">*</span></label>
+      <input id="resume" name="resume" type="file" accept=".pdf,application/pdf" required>
+      <label for="job_description">Job description <span class="muted">(optional)</span></label>
+      <textarea id="job_description" name="job_description" rows="5" placeholder="Paste the job description to calculate a match score..."></textarea>
+      <button type="submit">Analyze Resume <span>→</span></button>
+    </form>
+    <p class="small">Demo project • Maximum PDF size: 5 MB • Text-based PDFs supported</p>
+  </section>
+</main>
+<footer>Built with Python, Flask and NLP techniques · For educational use</footer>
+</body></html>
